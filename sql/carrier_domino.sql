@@ -9,10 +9,9 @@ from delays d
 group by d.carrier)
 select d.carrier, d.carrier_name, 
 sum(d.arr_flights) as flights_carrier, sum(d.carrier_delay) as carrier_minutes, origin_minutes, 
-round((sum(d.late_aircraft_delay)/ origin_minutes),3) as domino,
-round((sum(d.carrier_delay) * 100.0 / origin_minutes),2) as carrier_fault_share 
+round((sum(d.late_aircraft_delay)/ nullif(origin_minutes,0)),3) as domino,
+round((sum(d.carrier_delay) * 100.0 / nullif(origin_minutes,0)),2) as carrier_fault_share 
 from delays d
 	inner join origin_reasons
 	on origin_reasons.carrier = d.carrier
 group by d.carrier, d.carrier_name, origin_minutes
-order by carrier_fault_share desc
